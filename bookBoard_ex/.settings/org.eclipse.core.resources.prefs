@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/org/zerock/controller=UTF-8
+encoding//src/main/java/org/zerock/controller/BoardRealController.java=UTF-8
+encoding//src/main/java/org/zerock/controller/GoogleLoginController.java=UTF-8
+encoding//src/main/java/org/zerock/controller/UserController.java=UTF-8
+encoding//src/main/java/org/zerock/service/BoardRealServiceImpl.java=UTF-8
+encoding//src/main/java/org/zerock/service/BoardServiceImpl.java=UTF-8
+encoding/<project>=UTF-8

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.ReplyMapper">
+
+	<insert id="insert">
+		insert into tbl_reply(rno, bno, reply, user_id, replyDate, updateDate, step, indent, del, user_img, writer) values ((select max(rno)+1 from tbl_reply a), #{bno}, #{reply}, #{user_id}, current_timestamp, current_timestamp, 1, (select max(indent)+1 from tbl_reply a), 1, #{user_img}, #{writer})
+	</insert>
+	
+	<insert id="reReply">
+		insert into tbl_reply(rno, bno, reply, user_id, replyDate, updateDate, step, indent, del, user_img, writer) values ((select max(rno)+1 from tbl_reply a), #{bno}, #{reply}, #{user_id}, current_timestamp, current_timestamp, #{step}+1, #{indent}+1, 1, #{user_img})
+	</insert>
+	
+	<insert id="baseReply">
+		insert into tbl_reply(rno, bno, reply, user_id, replyDate, updateDate, step, indent, del, user_img, writer) values ((select max(rno)+1 from tbl_reply a), (select max(bno)+1 from tbl_board b), #{reply}, #{user_id}, current_timestamp, current_timestamp, 0, 0, 1, #{user_img})
+	</insert>
+	
+	<select id="read" resultType="org.zerock.domain.ReplyVO">
+		select * from tbl_reply where rno = #{rno}
+	</select>
+	
+	<select id="readBno" resultType="org.zerock.domain.ReplyVO">
+		select * from tbl_reply where bno = #{bno}
+	</select>
+	
+	<delete id="delete">
+		delete from tbl_reply where rno = #{rno}
+	</delete>
+	
+	<update id="delUpdate">
+		update tbl_reply set del = 0, updatedate = CURRENT_TIMESTAMP where rno = #{rno}
+	</update>
+	
+	<update id="update">
+		update tbl_reply set reply = #{reply}, updatedate = CURRENT_TIMESTAMP where rno = #{rno}
+	</update>
+	
+	<update id="indentUp">
+		update tbl_reply set indent = indent+1 where bno = #{bno} and indent > #{indent}
+	</update>
+	
+	<update id="stepDown">
+		update tbl_reply set step = 0 where bno = #{bno}
+	</update>
+	
+	
+	<select id="getList" resultType="org.zerock.domain.ReplyVO">
+		select rno, bno, reply, user_id, replyDate, updateDate, step, indent, del, user_img from tbl_reply where bno = #{bno} order by rno asc
+	</select>
+	
+	<select id="newComment" resultType="org.zerock.domain.ReplyVO">
+		select * from tbl_reply where bno = #{bno} and step = 1
+	</select>
+	
+	<delete id="removeAll">
+		delete from tbl_reply where bno = #{bno}
+	</delete>
+	
+	<select id="readID" resultType="org.zerock.domain.ReplyVO">
+		select * from tbl_reply where writer = #{writer} and step = 1
+	</select>
+	
+
+	<!-- alter table tbl_attach add constraint fk_board_attach foreign key (bno) references tbl_board(bno) -->
+</mapper>

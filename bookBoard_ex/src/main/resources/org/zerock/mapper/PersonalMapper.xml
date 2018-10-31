@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.PersonalMapper">
+
+	<select id="getVO" resultType="org.zerock.domain.BackgroundVO">
+		select * from background where user_id = #{user_id}
+	</select>
+	
+	<select id="get">
+		select * from background where user_id = #{user_id}
+	</select>
+	
+	<select id="followChk" resultType="org.zerock.domain.FollowVO" >
+		select * from follow where user_id = #{user_id} and following = #{following}
+	</select>
+
+	<insert id="insert">
+		insert into background (user_id, bg_img, bgDate) values(#{user_id}, #{bg_img}, current_timestamp())
+	</insert>
+	
+	<insert id="followInsert">
+		 insert into follow (num, user_id, following, followDate, sender_img, follow_img) values((select max(num)+1 from follow f), #{vo.user_id}, #{vo.following}, current_timestamp(), #{vo.sender_img}, (select user_img from ppboard as c where user_id = #{vo.following}))
+	</insert>
+<!--insert into follow (num, user_id, following, followDate, sender_img, follow_img) values((select max(num)+1 from follow f), #{vo.user_id}, #{vo.following},  current_timestamp(), #{vo.sender_img}, #{vo.follow_img}) -->	
+	<!-- insert into follow (num, user_id, following, followDate, sender_img, follow_img) values((select max(num)+1 from follow f), #{vo.user_id}, #{vo.following}, current_timestamp(), #{vo.sender_img}, (select user_img from ppboard where user_id = #{vo.following})) -->
+	
+	<update id="update">
+		update background set user_id = #{user_id}, bg_img = #{bg_img}, bgDate = current_timestamp() where user_id = #{user_id}
+	</update>
+	
+	<delete id="followDelete">
+		delete from follow where user_id = #{vo.user_id} and following = #{vo.following}
+	</delete>
+	
+	<select id="getFollower" resultType="org.zerock.domain.FollowVO">
+		select * from follow where user_id = #{user_id}
+	</select>
+	
+	<select id="bnoChk" resultType="org.zerock.domain.emotionVO">
+		select * from emotion where bno = #{bno} and user_id = #{user_id}
+	</select>
+	
+	
+	<update id="emotionUpdate">
+		update emotion set
+		 `like` = #{vo.like}
+		where (`bno` = #{vo.bno}) and (`writer` = #{vo.writer}) and (`user_id` = #{vo.user_id})
+	</update>
+	
+	<select id="getFollowingMe" resultType="org.zerock.domain.FollowVO">
+		select * from follow where following = #{following} <!-- 나를 팔로워하는 사람 가져오는것 {팔로윙}은 user_id의미. -->
+	</select>
+	
+<!-- 	<insert id="emotionInsert">
+		insert into emotion (no, bno, like, user_id, writer) values ((select max(no)+1 from emotion), #{vo.bno}, #{vo.like}, #{vo.user_id}, #{vo.writer} )
+	</insert> -->
+	
+	<insert id="emotionInsert">
+		
+		insert into emotion (`no`, `bno`, `like`, `user_id`, `writer`) values ((select max(no)+1 from emotion e), #{vo.bno}, #{vo.like}, #{vo.user_id}, #{vo.writer} )
+	</insert>
+	
+	
+	
+	
+	
+
+	<!-- alter table tbl_attach add constraint fk_board_attach foreign key (bno) references tbl_board(bno) -->
+</mapper>
